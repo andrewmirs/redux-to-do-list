@@ -17,17 +17,19 @@ class AddItem extends Component {
         )
     }
     
-    handleAddItem(values){
-        console.log('Form values:', values);
+    handleAddItem = async (values) => {
+        await this.props.addToDoItem(values);
+
+        this.props.history.push('/');
     }
 
     render(){
-        const { handleSubmit } = this.props;
+        const { handleSubmit, reset } = this.props;
 
         return(
             <div>
                 <h1 className="center">Add Item</h1>
-                <NavButton to="/" text="Back to List" color="purple" />
+                <NavButton to="/" text="Back to List" color="blue" />
                 <form onSubmit={handleSubmit(this.handleAddItem)}> 
                     <div className="row">
                         <Field size="s12" name="title" label="Title" component={this.renderInput} />
@@ -36,7 +38,10 @@ class AddItem extends Component {
                         <Field size="s12" name="details" label="Details" component={this.renderInput} />   
                     </div>
                     <div className="row">
-                        <div className="col s12 right-align">
+                        <div className="col s6 center">
+                            <button type="button" onClick={reset} className="btn red">Cancel</button>
+                        </div>
+                        <div className="col s6 center">
                             <button className="btn blue">Add Item</button>
                         </div>
                     </div>
@@ -53,7 +58,7 @@ function checkMyForm(formValues){
         error.title = 'Please enter a title for your to-do item.';
     }
 
-    if(formValues.title && formValues.title.length > 10){
+    if(formValues.title && formValues.title.length > 20){
         error.title = 'Title is too long.';
     }
 
@@ -69,4 +74,6 @@ AddItem = reduxForm({
     validate: checkMyForm
 })(AddItem);
 
-export default connect()(AddItem);
+export default connect(null, {
+    addToDoItem: addToDoItem
+})(AddItem);
